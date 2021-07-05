@@ -1,10 +1,10 @@
 {
   "name": "withdraw-paypal",
   "private": true,
-    "scripts": {
+  "scripts": {
     "build": "./bin/webpack -p",
     "watch": "./bin/webpack --watch",
-    "watch:hot": "./bin/webpack-dev-server"   
+    "watch:hot": "./bin/webpack-dev-server"
   },
   "dependencies": {
     "@babel/preset-react": "^7.14.5",
