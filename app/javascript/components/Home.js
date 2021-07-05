@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 
-export default function Home() {
-  const [details, setDetails] = useState({
-    amount: 0,
-    convert: false,
-  });
+export default function Home({ setCost }) {
+  const [amount, setAmount] = useState(0);
 
   const withdraw = async () => {
     const token = document.querySelector('meta[name="csrf-token"]').content;
@@ -16,7 +13,7 @@ export default function Home() {
         "X-CSRF-Token": token,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(details),
+      body: JSON.stringify({ amount }),
     })
       .then((response) => {
         if (response.ok) {
@@ -24,17 +21,19 @@ export default function Home() {
         }
         throw new Error("Network response was not ok.");
       })
-      .then((response) => console.log(response))
+      .then((response) => {
+        setCost(response);
+        console.log(Array.from(Object.entries(response.ksh)));
+      })
       .catch((error) => console.log(error));
   };
 
   const handleAmount = (e) => {
-    setDetails({ ...details, amount: parseInt(e.target.value) });
+    setAmount(parseInt(e.target.value));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(details);
     withdraw();
   };
 
@@ -48,7 +47,7 @@ export default function Home() {
             type="text"
             className="form-control"
             name="amount"
-            value={details.amount}
+            value={amount}
             onChange={handleAmount}
             placeholder="Enter amount to withdraw"
           />
@@ -61,14 +60,6 @@ export default function Home() {
           Submit
         </button>
       </form>
-      <div className="d-flex">
-        <div className="flex-1 not-converted">
-          <h5>Without Conversion</h5>
-        </div>
-        <div className="flex-1 converted">
-          <h5>With Conversion</h5>
-        </div>
-      </div>
     </div>
   );
 }

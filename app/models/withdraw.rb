@@ -3,27 +3,50 @@ class Withdraw < ApplicationRecord
     validates :convert, presence: true
 
     PAYPAL_COMMISSION = 0.03
+    OFFSHORE_COMMISSION = 0.02
     CLIENT_COMMISSION = 0.02
     CONVERSION_RATE = 108
     MPESA_RATE_LOW = 22
     MPESA_RATE_MID = 55
     BANK_CHARGES = 40
 
-    def self.with_convert(amount)
-        local_transfer = amount + MPESA_RATE_LOW + BANK_CHARGES
-        bank_transfer = local_transfer * (1/(1-CLIENT_COMMISSION))
-        paypal_charges = bank_transfer * (1/(1-PAYPAL_COMMISSION))
-        @with_outline = {
-            "paypal_commission": paypal_charges - bank_transfer,
-            "client_commission": bank_transfer - local_transfer,
-            "mpesa_transaction_fee": MPESA_RATE_LOW ,
+    def self.with_conversion(amount)
+        customer_mpesa = amount
+        client_mpesa_wallet = customer_mpesa + 22
+        local_bank_balance_after_commission = client_mpesa_wallet + BANK_CHARGES
+        local_bank_balance_before_commission = local_bank_balance_after_commission  * (1/(1-CLIENT_COMMISSION))
+        offshore_bank_balance = local_bank_balance_before_commission * (1/(1-OFFSHORE_COMMISSION))
+        usd_value = offshore_bank_balance / CONVERSION_RATE
+        customer_paypal_balance = usd_value * (1/(1-PAYPAL_COMMISSION))
+        
+        with_outline = {
+            "paypal_commission": customer_paypal_balance - usd_value,
+            "offshore_commission": offshore_bank_balance - local_bank_balance_before_commission,
+            "client_commission": local_bank_balance_before_commission - local_bank_balance_after_commission,
+            "mpesa_transaction_fee": MPESA_RATE_LOW,
             "bank_charges": BANK_CHARGES,
-            "required_balance": paypal_charges
+            "required_balance": customer_paypal_balance
         }
-        @with_outline
+        with_outline      
     end
 
     def self.without_conversion(amount)
+        customer_mpesa = amount
+        client_mpesa_wallet = customer_mpesa + 22
+        local_bank_balance_after_commission = client_mpesa_wallet + BANK_CHARGES
+        local_bank_balance_before_commission = local_bank_balance_after_commission  * (1/(1-CLIENT_COMMISSION))
+        offshore_bank_balance = local_bank_balance_before_commission * (1/(1-OFFSHORE_COMMISSION))
+        customer_paypal_balance = offshore_bank_balance * (1/(1-PAYPAL_COMMISSION))
+        
+        with_outline = {
+            "paypal_commission": customer_paypal_balance - offshore_bank_balance,
+            "offshore_commission": offshore_bank_balance - local_bank_balance_before_commission,
+            "client_commission": local_bank_balance_before_commission - local_bank_balance_after_commission,
+            "mpesa_transaction_fee": MPESA_RATE_LOW,
+            "bank_charges": BANK_CHARGES,
+            "required_balance": customer_paypal_balance
+        }
+        with_outline
     end
 
 
