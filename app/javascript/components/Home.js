@@ -23,7 +23,6 @@ export default function Home({ setCost }) {
       })
       .then((response) => {
         setCost(response);
-        console.log(Array.from(Object.entries(response.ksh)));
       })
       .catch((error) => console.log(error));
   };
@@ -38,7 +37,7 @@ export default function Home({ setCost }) {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container">
       <h3>Withdraw cash from Paypal</h3>
       <form>
         <div className="form-group">
@@ -52,11 +51,7 @@ export default function Home({ setCost }) {
             placeholder="Enter amount to withdraw"
           />
         </div>
-        <button
-          type="submit"
-          className="btn btn-primary my-2"
-          onClick={handleSubmit}
-        >
+        <button type="submit" className="btn" onClick={handleSubmit}>
           Submit
         </button>
       </form>

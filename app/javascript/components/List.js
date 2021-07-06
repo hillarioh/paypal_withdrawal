@@ -4,20 +4,30 @@ export default function List({ obj, currency }) {
   return (
     <ul className="list-group">
       <li className="list-group-item">
-        PayPal Commission: {obj.paypal_commission}
+        <span>PayPal Commission:</span>
+        <span>
+          {currency}. {obj.paypal_commission}
+        </span>
       </li>
       <li className="list-group-item">
-        Off-Shore Commission: {obj.offshore_commission}
+        <span>Off-Shore Commission:</span>
+        <span> Ksh. {obj.offshore_commission}</span>
       </li>
       <li className="list-group-item">
-        Client Commission: {obj.client_commission}
+        <span>Client Commission:</span>
+        <span>Ksh. {obj.client_commission}</span>
       </li>
       <li className="list-group-item">
-        Mpesa Transaction: {obj.mpesa_transaction_fee}
+        <span>Mpesa Transaction:</span>
+        <span>Ksh. {obj.mpesa_transaction_fee}</span>
       </li>
-      <li className="list-group-item">Bank Charges: {obj.bank_charges}</li>
       <li className="list-group-item">
-        Amount Required({currency}): {obj.required_balance}
+        <span>Bank Charges:</span>
+        <span>{obj.bank_charges}</span>
+      </li>
+      <li className="list-group-item">
+        <span>Amount Required({currency}): </span>
+        <span>{obj.required_balance}</span>
       </li>
     </ul>
   );

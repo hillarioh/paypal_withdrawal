@@ -3,7 +3,7 @@ import List from "./List";
 
 export default function Details({ cost, setCost }) {
   return (
-    <div className="container mt-5">
+    <div className="details">
       <button
         type="submit"
         className="btn btn-secondary my-2"
@@ -12,12 +12,12 @@ export default function Details({ cost, setCost }) {
         Back
       </button>
       <div className="row">
-        <div className="col-6 not-converted">
-          <h5>Without Conversion</h5>
+        <div className="not-converted">
+          <h3>Without Conversion</h3>
           <List obj={cost.ksh} currency="KSH" />
         </div>
-        <div className="col-6 converted">
-          <h5>With Conversion</h5>
+        <div className="converted">
+          <h3>With Conversion</h3>
           <List obj={cost.usd} currency="USD" />
         </div>
       </div>
