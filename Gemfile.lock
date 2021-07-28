@@ -60,6 +60,7 @@ GEM
       minitest (>= 5.1)
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
+    base64 (0.1.0)
     bindex (0.8.1)
     bootsnap (1.7.5)
       msgpack (~> 1.0)
@@ -91,6 +92,7 @@ GEM
     nio4r (2.5.7)
     nokogiri (1.11.7-x86_64-linux)
       racc (~> 1.4)
+    openssl (2.2.0)
     pg (1.2.3)
     puma (5.3.2)
       nio4r (~> 2.0)
@@ -177,10 +179,12 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  base64
   bootsnap (>= 1.4.4)
   byebug
   jbuilder (~> 2.7)
   listen (~> 3.3)
+  openssl
   pg (~> 1.1)
   puma (~> 5.0)
   rack-mini-profiler (~> 2.0)

@@ -1,23 +1,35 @@
 class HomepageController < ApplicationController
+  skip_before_action :verify_authenticity_token
+  APP_KEY = "254qwerty"
   def index
+    # data = "eyJET01BSU4iOiJmaW5wbHVzLnNhbmRib3gubWFtYnUuY29tIiwiQUxHT1JJVEhNIjoiaG1hY1NIQTI1NiIsIlRFTkFOVF9JRCI6ImZpbnBsdXMiLCJVU0VSX0tFWSI6IjhhODU4Njk1N2FkY2NhMTEwMTdhZTJjYTY2ZmQwYmY1In0"
+    # p Base64.decode64("eyJET01BSU4iOiJmaW5wbHVzLnNhbmRib3gubWFtYnUuY29tIiwiQUxHT1JJVEhNIjoiaG1hY1NIQTI1NiIsIlRFTkFOVF9JRCI6ImZpbnBsdXMiLCJVU0VSX0tFWSI6IjhhODU4Njk1N2FkY2NhMTEwMTdhZTJjYTY2ZmQwYmY1In0")
+
   end
   def credentials
     data={
-      "app": {
         "id": "254qwerty",
         "name": "PayPal Withdrawal",
         "provider": "Finplus group",
-        "description": "A tool to export your data in an xbrl report ready to use for mix market",
-        "uninstallUrl": "https://mixmarketapp.appspot.com/mambuxbrl/uninstall",
-        "installUrl": "httsp://mixmarketapp.appspot.com/mambuxbrl/install",
+        "description": "An app to calculate paypal transaction fee to Client Mpesa",
         "extensionpoint": {
-          "location": "REPORTING_VIEW",
+          "location": "EXTENSION_MENU",
           "label": "PAYPAL Withdrawal",
-          "url": "https://a06cf2f6381d.ngrok.io",
+          "url": "https://3e33069cb235.ngrok.io/authenticate",
         }
-      }
     }
-     render :xml =>  data      
+     render :xml =>  data.to_xml(:root => :app, :skip_types => true)      
+  end
+  def authenticate
+    result = params[:signed_request].split(".")
+    mac = OpenSSL::HMAC.hexdigest("SHA256", APP_KEY, result[1])
+
+    if mac == result[0]
+      redirect_to root_path
+    else
+      redirect_to root_path
+    end
+
   end
   def withdraw 
     @ksh_withdrawal = Withdraw.without_conversion(params[:amount])
