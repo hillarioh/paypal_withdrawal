@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   root 'homepage#index'
   post '/authenticate', to: "homepage#authenticate"
+  post '/', to: "homepage#authenticate"
   post '/withdraw', to: "homepage#withdraw" 
   get '/not-found', to: "homepage#unauthorized" 
   get '/credentials', to: "homepage#credentials"
