@@ -1,25 +1,21 @@
 class HomepageController < ApplicationController
   skip_before_action :verify_authenticity_token
   after_action :allow_iframe
-  APP_KEY = "254qwerty"
+  
   def index
-    p cookies[:user_id]
-    # data = "eyJET01BSU4iOiJmaW5wbHVzLnNhbmRib3gubWFtYnUuY29tIiwiQUxHT1JJVEhNIjoiaG1hY1NIQTI1NiIsIlRFTkFOVF9JRCI6ImZpbnBsdXMiLCJVU0VSX0tFWSI6IjhhODU4Njk1N2FkY2NhMTEwMTdhZTJjYTY2ZmQwYmY1In0"
-    # p Base64.decode64("eyJET01BSU4iOiJmaW5wbHVzLnNhbmRib3gubWFtYnUuY29tIiwiQUxHT1JJVEhNIjoiaG1hY1NIQTI1NiIsIlRFTkFOVF9JRCI6ImZpbnBsdXMiLCJVU0VSX0tFWSI6IjhhODU4Njk1N2FkY2NhMTEwMTdhZTJjYTY2ZmQwYmY1In0")
-
   end
 
   def credentials
     data={
         "id": "254qwerty",
-        "name": "PayPal Withdrawal",
+        "name": "TRIALS TU",
         "provider": "Finplus group",
         "description": "An app to calculate paypal transaction fee to Client Mpesa",
-        "installUrl": "https://tranquil-reef-08552.herokuapp.com/",
+        "installUrl": "https://330b8cddc71d.ngrok.io/",
         "extensionpoint": {
           "location": "EXTENSION_MENU",
-          "label": "PAYPAL Withdrawal",
-          "url": "https://tranquil-reef-08552.herokuapp.com/authenticate",
+          "label": "TRIALS TWO",
+          "url": "https://330b8cddc71d.ngrok.io/authenticate",
         }
     }   
     
@@ -27,27 +23,13 @@ class HomepageController < ApplicationController
   end
 
   def authenticate
-    result = params[:signed_request].split(".")
-    mac = OpenSSL::HMAC.hexdigest("SHA256", APP_KEY, result[1])    
-
-    @user_info = Base64.decode64(result[1])
-    
-    # cookies[:user_id] = result
-    @user_info = JSON[@user_info.as_json]
-
-    User.create(user_key: @user_info["USER_KEY"], domain: @user_info["DOMAIN"])
-    cookies[:user_id] = @user_info["USER_KEY"]
-
-    if mac == result[0]
-      redirect_to root_path
-    else
-      redirect_to not_found_path
-    end
+    token = params[:signed_request]
+    User.set_token(token)
+    redirect_to root_path
   end
 
-  def user_info
-    p cookies[:user_id]
-    render :json => User.last.as_json
+  def user_info 
+    render json: {user_info: User.user_details} , status: :ok
   end
 
   def withdraw 
@@ -65,6 +47,7 @@ class HomepageController < ApplicationController
 
   private
   def allow_iframe
+    # cookies[:user_id] = 34
     response.headers.delete "X-Frame-Options"
   end
 end

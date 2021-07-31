@@ -1,6 +1,4 @@
 class Withdraw < ApplicationRecord
-    validates :amount, presence: true
-    validates :convert, presence: true
 
     PAYPAL_COMMISSION = 0.03
     OFFSHORE_COMMISSION = 0.02
@@ -29,6 +27,7 @@ class Withdraw < ApplicationRecord
         }
         with_outline      
     end
+
 
     def self.without_conversion(amount)
         customer_mpesa = amount

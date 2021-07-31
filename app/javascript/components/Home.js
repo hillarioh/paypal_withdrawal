@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Base64 } from "js-base64";
+import Loader from "react-loader-spinner";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 export default function Home({ setCost }) {
   const [amount, setAmount] = useState(0);
+  const [userDetails, setUserDetails] = useState(null);
 
   const withdraw = async () => {
     const token = document.querySelector('meta[name="csrf-token"]').content;
@@ -28,35 +30,8 @@ export default function Home({ setCost }) {
       .catch((error) => console.log(error));
   };
 
-  const getUserDetails = async (id) => {
-    const token = document.querySelector('meta[name="csrf-token"]').content;
-    const hash = Base64.encode("okerio.hilarry:WorkTrial1");
-    let url = `https://finplus.sandbox.mambu.com/api/users?userId=?${id}&detailsLevel=BASIC`;
-    await fetch(url, {
-      method: "GET",
-      redirect: "follow",
-      headers: {
-        "X-CSRF-Token": token,
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-        Authorization: `Basic ${hash}`,
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("Network response was not ok.");
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => console.log(error));
-  };
-
   useEffect(() => {
-    // getInfo();
-    getUserDetails("8a8586957adcca11017ae2ca66fd0bf5");
+    getInfo();
   }, []);
 
   const getInfo = async () => {
@@ -77,7 +52,7 @@ export default function Home({ setCost }) {
         throw new Error("Network response was not ok.");
       })
       .then((response) => {
-        getUserDetails("8a8586957adcca11017ae2ca66fd0bf5");
+        setUserDetails(response.user_info[0]);
       })
       .catch((error) => console.log(error));
   };
@@ -110,6 +85,33 @@ export default function Home({ setCost }) {
           Submit
         </button>
       </form>
+      <div className="user-info">
+        {userDetails ? (
+          <div className="user-details">
+            <h3>User Details</h3>
+            <p className="">
+              <span>First Name</span>
+              <span>{userDetails.firstName}</span>
+            </p>
+            <p className="">
+              <span>Last Name</span>
+              <span>{userDetails.lastName}</span>
+            </p>
+            <p>
+              <span>Email</span>
+              <span>{userDetails.email}</span>
+            </p>
+            <p>
+              <span>Title</span>
+              <span>{userDetails.title}</span>
+            </p>
+          </div>
+        ) : (
+          <div className="loader">
+            <Loader type="Circles" color="#2196f7a6" height={100} width={100} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
