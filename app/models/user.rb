@@ -17,7 +17,7 @@ class User
         https = Net::HTTP.new(url.host, url.port)
         https.use_ssl = true
         request = Net::HTTP::Get.new(url)
-        request["Authorization"] = "Basic b2tlcmlvLmhpbGFycnk6V29ya1RyaWFsMQ=="
+        request["Authorization"] = "Basic #{Rails.application.credentials.api_key}"
 
         response = https.request(request)
 
